@@ -338,6 +338,15 @@ resource "aws_cloudwatch_event_target" "xosphere_terminator_cloudwatch_event_tar
   target_id = "xosphere-terminator"
   depends_on = [
     "data.aws_lambda_function.terminator_lambda_function"]
+  lifecycle {
+    # Ignore changes to arn since it is loaded using a data resource
+    # prior to Terraform 0.13.x this results in a perma-change everytime
+    # terraform apply is run. By ignoring this bogus "change" we get
+    # clean runs that have 0 changes
+    ignore_changes = [
+      "arn",
+    ]
+  }
 }
 
 //instance-orchestrator
@@ -751,6 +760,15 @@ resource "aws_cloudwatch_event_target" "xosphere_instance_orchestrator_cloudwatc
   target_id = "xosphere-instance-orchestrator"
   depends_on = [
     "data.aws_lambda_function.instance_orchestrator_lambda_function"]
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to arn since it is loaded using a data resource
+      # prior to Terraform 0.13.x this results in a perma-change everytime
+      # terraform apply is run. By ignoring this bogus "change" we get
+      # clean runs that have 0 changes
+      "arn",
+    ]
+  }
 }
 
 //launcher
